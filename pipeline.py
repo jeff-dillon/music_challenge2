@@ -63,12 +63,6 @@ def get_sales_by_artist(artist_id:int, conn:sqlite3.Connection) -> pd.DataFrame:
     return df
 
 
-def add_month_year(sales_df) -> pd.DataFrame:
-    sales_df['Year'] = pd.DatetimeIndex(sales_df['InvoiceDate']).year
-    sales_df['Month'] = pd.DatetimeIndex(sales_df['InvoiceDate']).month
-    return sales_df
-
-
 def save_sales(sales_df:pd.DataFrame):
     file_path = Path('sales.csv')
     sales_df.to_csv(file_path, index=False)
@@ -95,9 +89,6 @@ def main():
         
         logging.info("Extracting sales data from database.")
         sales_df = get_sales(conn)
-
-        # logging.info("Adding the Month and Year columns.")
-        # sales_df = add_month_year(sales_df)
 
         logging.info("Saving the sales data as CSV.")
         save_sales(sales_df)

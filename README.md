@@ -5,7 +5,7 @@ Coding Challenge for Code Louisville Data Analysis 2 Course. The goal of this ch
 
  The starting point for this exercise a simple data pipeline that is used to extract sales information from a database and prepare it for use in dashboard reports. In this challenge you will be adding features to the existing data pipeline. 
 
- ![pipelie.png](pipeline.png)
+ ![pipelie diagram](pipeline.png)
 
  `pipeline.py` Steps
  
@@ -24,6 +24,10 @@ Coding Challenge for Code Louisville Data Analysis 2 Course. The goal of this ch
 - `save_sales_by_artist()` saves the sales by artist data to a CSV file
 - `main()` main function for the pipeline which runs the pipeline steps
 
+## Database Schema
+
+Music database schema for reference:
+ ![datbase schema](sqlite-sample-database-color.jpg)
 ## Challenges
 ### Challenge 1: Add Genres to the `get_sales()` function
 - Update the `get_sales()` function in `pipeline.py` to also include Genre in the returned Python DataFrame.
@@ -60,3 +64,6 @@ Coding Challenge for Code Louisville Data Analysis 2 Course. The goal of this ch
 1. run the pipeline.py file to generate the CSV file(s)
 1. run the graphs.py file to see the example graphs
 1. modify the pipeline.py and graphs.py files to complete the challenges and bonus.
+
+## Query Tool
+You can use the query tool from [SQLite Tutorial](https://www.sqlitetutorial.net/tryit/) to test your queries.
