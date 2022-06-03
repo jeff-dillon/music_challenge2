@@ -33,7 +33,14 @@ Music database schema for reference:
  ![datbase schema](images/sqlite-sample-database-color.jpg)
  You can use the query tool from [SQLite Tutorial](https://www.sqlitetutorial.net/tryit/) to test your queries.
 ## Challenges
-### Challenge 1: Add Annual Sales function
+### Challenge 1: Add Tracks by Genre function
+
+- Add a new function to `pipeline.py` called `get_tracks_by_genre()` to get the number of Tracks by Genre
+- The resulting DataFrame should include Genre, NumTracks
+- Save the data to a CSV file called `tracks_by_genre.csv`
+
+
+### Challenge 2: Add Annual Sales function
 - add a new function to `pipeline.py` called `get_annual_sales_by_month()` that takes a Year and returns a dataframe with the sales for the specified year
 - The function should take a Year as a parameter
 - The function should return a DataFrame
@@ -41,7 +48,7 @@ Music database schema for reference:
 - Save the data to a CSV file called 'sales_by_month_{year}.csv
 
 
-### Challenge 2: Add Sales by Quarter function
+### Challenge 3: Add Sales by Quarter function
 
 - Add a `get_sales_by_quarter()` function in `pipeline.py` 
 - The function should take a Connection as a parameter
@@ -53,11 +60,6 @@ Music database schema for reference:
     - [Calculating Quarters in Pandas](https://datascienceparichay.com/article/get-quarter-from-date-in-pandas/)
 - Save the data to CSV file called `quarterly_sales.csv` 
 
-### Challenge 3: Add Tracks by Genre function
-
-- Add a new function to `pipeline.py` called `get_tracks_by_genre()` to get the number of Tracks by Genre
-- The resulting DataFrame should include Genre, NumTracks
-- Save the data to a CSV file called `tracks_by_genre.csv`
 
 ### Bonus: Graphing 
 - Update the `graphs.py` file to include a graph of sales by quarter.

@@ -2,6 +2,7 @@
 pipeline_log.txt
 *.csv
 settings.json
+answers.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
