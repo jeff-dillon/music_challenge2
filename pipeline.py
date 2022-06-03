@@ -40,8 +40,8 @@ def get_sales(conn:sqlite3.Connection) -> pd.DataFrame:
 
 def get_sales_by_artist(artist_id:int, conn:sqlite3.Connection) -> pd.DataFrame:
     """
-    Get the list of tracks by Genre
-    :param: genre_id: the ID of the genre
+    Get the list of tracks by Artist
+    :param: artist_id: the ID of the artist
     :param: conn: connection to database
     :return: all tracks in the specified genre
     """
@@ -61,16 +61,27 @@ def get_sales_by_artist(artist_id:int, conn:sqlite3.Connection) -> pd.DataFrame:
 
 
 def save_sales(sales_df:pd.DataFrame):
+    """
+    Save the sales data to CSV file
+    :param: sales_df: DataFrame with sales data
+    """
     file_path = Path('sales.csv')
     sales_df.to_csv(file_path, index=False)
 
 
 def save_sales_by_artist(sales_by_artist_df:pd.DataFrame):
+    """
+    Save the sales by artist data to CSV file
+    :param: sales_by_artist_df: DataFrame with sales by artist data
+    """
     file_path = Path('sales_by_artist.csv')
     sales_by_artist_df.to_csv(file_path, index=False)
 
 
 def main():
+    """
+    Runs the data pipeline.
+    """
 
     logging.basicConfig(filename='pipeline_log.txt', level=logging.INFO)
     
