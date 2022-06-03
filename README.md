@@ -10,7 +10,6 @@ Coding Challenge for Code Louisville Data Analysis 2 Course. The goal of this ch
  `pipeline.py` Steps
  
  1. Extract music sales data
- 1. Enhance the data with Year and Month columns
  1. Save the data as a CSV file for use in reporting
 
  In addition to the `pipeline.py` file, there is also a `graphs.py` file that shows some simple graphing of the data in the CSV files.
