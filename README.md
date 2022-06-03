@@ -73,4 +73,10 @@ Music database schema for reference:
 1. run the graphs.py file to see the example graphs
 1. modify the pipeline.py and graphs.py files to complete the challenges and bonus.
 
-## Query Tool
+## Resources
+
+- [Plotly Documentation](https://plotly.com/python/basic-charts/)
+- [Python Logging](https://docs.python.org/3/howto/logging.html)
+- [SQL CASE Statements](https://mode.com/sql-tutorial/sql-case/)
+- [Calculating Quarters from Dates in Pandas](https://datascienceparichay.com/article/get-quarter-from-date-in-pandas/)
+- [SQLite Tutorial Query Tool](https://www.sqlitetutorial.net/tryit/)
