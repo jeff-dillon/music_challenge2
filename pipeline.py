@@ -17,9 +17,6 @@ def create_connection(db_file:str):
 
     return conn
 
-def log_message(msg:str):
-    print(msg)
-
 
 def get_sales(conn:sqlite3.Connection) -> pd.DataFrame:
     """
@@ -30,7 +27,7 @@ def get_sales(conn:sqlite3.Connection) -> pd.DataFrame:
 
     sql_query = """
         SELECT ROUND(SUM(ii.Quantity), 2) as Quantity,
-                ROUND(SUM(ii.UnitPrice), 2) as UnitPrice,
+                ROUND(SUM(ii.UnitPrice), 2) as TotalSales,
 				CAST(strftime('%Y', i.InvoiceDate) as text) || "-" || CAST(strftime('%m', i.InvoiceDate) as text) as Month
         FROM invoice_items ii
         INNER JOIN invoices i ON i.InvoiceId = ii.InvoiceId
@@ -50,7 +47,7 @@ def get_sales_by_artist(artist_id:int, conn:sqlite3.Connection) -> pd.DataFrame:
     """
     sql_query = """
         SELECT ROUND(SUM(ii.Quantity), 2) as Quantity,
-        ROUND(SUM(ii.UnitPrice), 2) as UnitPrice,
+        ROUND(SUM(ii.UnitPrice), 2) as TotalSales,
         CAST(strftime('%Y', i.InvoiceDate) as text) || "-" || CAST(strftime('%m', i.InvoiceDate) as text) as Month
         FROM invoice_items ii
         INNER JOIN invoices i ON i.InvoiceId = ii.InvoiceId
