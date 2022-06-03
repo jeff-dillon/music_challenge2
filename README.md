@@ -17,8 +17,8 @@ Coding Challenge for Code Louisville Data Analysis 2 Course. The goal of this ch
 ## Existing pipeline.py Functions
 
 - `get_connection()` returns a connection to the database
-- `'get_sales()` returns a Pandas DataFrame with all of the tracks sold including Year, Month, Artist Name, Album Title, Track Name, Quantity, Revenue
-- `get_sales_by_artist()` takes an ArtistId as a parameter and returns a Pandas DataFrame with all of the tracks sold by the specified artist including Year, Month, Artist Name, Album Title, Track Name, Quantity, UnitPrice
+- `'get_sales()` returns a Pandas DataFrame with the sales by month. Includes: Month, Quantity, TotalSales
+- `get_sales_by_artist()` takes an ArtistId as a parameter and returns a Pandas DataFrame with the sales for the specified artist including Month, Quantity, TotalSales
 - `save_sales()` takes a Pandas DataFrame as input and saves the sales data to a CSV file
 - `save_sales_by_artist()` saves the sales by artist data to a CSV file
 - `main()` main function for the pipeline which runs the pipeline steps
