@@ -5,7 +5,7 @@ Coding Challenge for Code Louisville Data Analysis 2 Course. The goal of this ch
 
  The starting point for this exercise a simple data pipeline that is used to extract sales information from a database and prepare it for use in dashboard reports. In this challenge you will be adding features to the existing data pipeline. 
 
- ![pipelie diagram](pipeline.png)
+ ![pipelie diagram](images/pipeline.png)
 
  `pipeline.py` Steps
  
@@ -26,7 +26,7 @@ Coding Challenge for Code Louisville Data Analysis 2 Course. The goal of this ch
 ## Database Schema
 
 Music database schema for reference:
- ![datbase schema](sqlite-sample-database-color.jpg)
+ ![datbase schema](images/sqlite-sample-database-color.jpg)
 ## Challenges
 ### Challenge 1: Add Sales by Genre
 - add a new function to `pipeline.py` called `get_sales_by_genre()` that takes a GenreId and a Year and returns a dataframe with the sales for the specified Genre for that year
