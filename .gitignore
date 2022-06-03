@@ -1,6 +1,7 @@
 # Project-specific files
 pipeline_log.txt
 *.csv
+settings.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

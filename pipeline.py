@@ -1,4 +1,6 @@
-from multiprocessing.connection import Connection
+"""
+Simple Data Pipeline
+"""
 import sys
 from pathlib import Path
 import logging
@@ -15,8 +17,8 @@ def create_connection(db_file:str) -> sqlite3.Connection:
     conn = None
     try:
         conn = sqlite3.connect(db_file)
-    except sqlite3.Error as e:
-        logging.error(e)
+    except sqlite3.Error as error:
+        logging.error(error)
 
     return conn
 
@@ -28,7 +30,7 @@ def configure_logging():
     # configure the logging
     log_file_path = Path('pipeline_log.txt')
     logging.basicConfig(filename=log_file_path,
-                        format='%(asctime)s -- [%(levelname)s]: %(message)s', 
+                        format='%(asctime)s -- [%(levelname)s]: %(message)s',
                         datefmt='%m/%d/%Y %I:%M:%S %p',
                         level=logging.INFO)
     logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
@@ -40,7 +42,6 @@ def get_sales_by_month(conn:sqlite3.Connection) -> pd.DataFrame:
     :param: conn: connection to database
     :return: DataFrame with sales by month (Month, Quantity, TotalSales)
     """
-
     sql_query = """
         SELECT ROUND(SUM(ii.Quantity), 2) as Quantity,
         ROUND(SUM(ii.UnitPrice), 2) as TotalSales,
@@ -50,10 +51,9 @@ def get_sales_by_month(conn:sqlite3.Connection) -> pd.DataFrame:
         INNER JOIN invoices i ON i.InvoiceId = ii.InvoiceId
 		GROUP BY Month;
     """
-    df = pd.read_sql_query(sql_query, conn)
-    
-    return df
-    
+    monthly_sales_df = pd.read_sql_query(sql_query, conn)
+    return monthly_sales_df
+
 
 def get_top_artists_by_sales(num_results:int, conn:sqlite3.Connection) -> pd.DataFrame:
     """
@@ -75,54 +75,35 @@ def get_top_artists_by_sales(num_results:int, conn:sqlite3.Connection) -> pd.Dat
         ORDER BY TotalSales DESC
         LIMIT ?
     """
-    df = pd.read_sql_query(sql_query, conn, params=(num_results, ))
-    return df
-
-
-def save_sales(sales_df:pd.DataFrame):
-    """
-    Save the sales data to CSV file
-    :param: sales_df: DataFrame with sales data
-    """
-    file_path = Path('data/sales.csv')
-    sales_df.to_csv(file_path, index=False)
-
-
-def save_sales_by_artist(sales_by_artist_df:pd.DataFrame):
-    """
-    Save the sales by artist data to CSV file
-    :param: sales_by_artist_df: DataFrame with sales by artist data
-    """
-    file_path = Path('data/sales_by_artist.csv')
-    sales_by_artist_df.to_csv(file_path, index=False)
+    artist_sales_df = pd.read_sql_query(sql_query, conn, params=(num_results, ))
+    return artist_sales_df
 
 
 def main():
-    configure_logging()    
+    """
+    Data Pipeline Process Control
+    """
+    configure_logging()
     logging.info("Starting data pipeline process")
 
     # create a database connection
-    database_file_path = Path("data/chinook.db")
-    conn = create_connection(database_file_path)
-    if not conn:
-        logging.ERROR("error connecting to database")
-        quit()
+    conn = create_connection(Path("data/chinook.db"))
 
     # run the data pipeline steps
     with conn:
-        
-        logging.info("Extracting sales data from database.")
-        sales_df = get_sales_by_month(conn)
 
-        logging.info("Saving the sales data as CSV.")
-        save_sales(sales_df)
+        logging.info("Extracting sales data from database")
+        monthly_sales_df = get_sales_by_month(conn)
+
+        logging.info("Saving the sales data as CSV")
+        monthly_sales_df.to_csv(Path('data/sales.csv'), index=False)
 
         logging.info("Extracting top 10 Artists by TotalSales")
         sales_by_artist_df = get_top_artists_by_sales(10, conn)
 
-        logging.info("Saving sales by artist")
-        save_sales_by_artist(sales_by_artist_df)
-    
+        logging.info("Saving sales by artist data as CSV")
+        sales_by_artist_df.to_csv(Path('data/sales_by_artist.csv'), index=False)
+
     conn.close()
 
     logging.info("Finishing data pipeline process")
