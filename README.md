@@ -29,27 +29,24 @@ Coding Challenge for Code Louisville Data Analysis 2 Course. The goal of this ch
 Music database schema for reference:
  ![datbase schema](sqlite-sample-database-color.jpg)
 ## Challenges
-### Challenge 1: Add Genres to the `get_sales()` function
-- Update the `get_sales()` function in `pipeline.py` to also include Genre in the returned Python DataFrame.
-- The resulting DataFrame should include Year, Month, Artist Name, Album Title, Track Name, Genre, Quantity, Revenue
-
-### Challenge 2: Add Sales by Genre
-- add a new function to `pipeline.py` called `get_sales_by_genre()` that takes a GenreId and returns a dataframe with all of the tracks sold from the specified Genre 
-- The resulting Dataframe should include Year, Month, Artist Name, Album Title, Track Name, Genre, Quantity, Revenue
+### Challenge 1: Add Sales by Genre
+- add a new function to `pipeline.py` called `get_sales_by_genre()` that takes a GenreId and a Year and returns a dataframe with the sales for the specified Genre for that year
+- The resulting Dataframe should include Genre, Quantity, UnitPrice
 - add a new function to `pipeline.py` called `save_sales_by_genre()` that saves the genre-specific sales data to a CSV file called `genre_sales.csv`
 
 
-### Challenge 3: Add Quarters to the `get_sales()` function
+### Challenge 2: Add Quarters to the `get_sales()` function
 
-- Update the `get_sales()` function in `pipeline.py` to also include the Quarter based on the Month of sale.
+- Update the `get_sales()` function in `pipeline.py` to also include the Quarter instead of the Month of sale.
 - Quarters should be formatted as: 2011Q1, 2011Q2, etc.
 - Tip: you calculate the Quarter in SQL or in Pandas.
     - [CASE Statements in SQL](https://mode.com/sql-tutorial/sql-case/)
     - [Calculating Quarters in Pandas](https://datascienceparichay.com/article/get-quarter-from-date-in-pandas/)
 
-### Challenge 4: Extract Catalog Data
+### Challenge 3: Extract Catalog Data
 
-- Add a new function to `pipeline.py` called `get_catalog_data()` to pull out all tracks including Track Name, Artist Name, Album Title, Genre
+- Add a new function to `pipeline.py` called `get_catalog_data()` to get the number of tracks by Genre
+- The resulting DataFrame should include Genre, NumTracks
 
 ### Bonus: Graphing 
 - Update the `graphs.py` file to include a graph of sales by quarter.
