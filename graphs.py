@@ -1,6 +1,6 @@
+from pathlib import Path
 import pandas as pd
 import plotly.express as px
-from pathlib import Path
 
 def load_sales_data() -> pd.DataFrame:
     file_path = Path('data/sales.csv')

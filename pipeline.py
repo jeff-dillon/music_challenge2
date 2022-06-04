@@ -36,9 +36,9 @@ def configure_logging():
     logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
 
-def get_sales_by_month(conn:sqlite3.Connection) -> pd.DataFrame:
+def get_sales_by_month_sql(conn:sqlite3.Connection) -> pd.DataFrame:
     """
-    Get total sales by month
+    Get total sales by month using SQL to aggregate the data
     :param: conn: connection to database
     :return: DataFrame with sales by month (Month, Quantity, TotalSales)
     """
@@ -54,6 +54,36 @@ def get_sales_by_month(conn:sqlite3.Connection) -> pd.DataFrame:
     monthly_sales_df = pd.read_sql_query(sql_query, conn)
     return monthly_sales_df
 
+def get_sales_by_month_pd(conn:sqlite3.Connection) -> pd.DataFrame:
+    """
+    Get total sales by month using Pandas to aggregate the data
+    :param: conn: connection to database
+    :return: DataFrame with sales by month (Month, Quantity, TotalSales)
+    """
+    sql_query = """
+        SELECT ii.Quantity as Quantity,
+        ii.UnitPrice as UnitPrice,
+        i.InvoiceDate as InvoiceDate
+        FROM invoice_items ii
+        INNER JOIN invoices i ON i.InvoiceId = ii.InvoiceId;
+    """
+    monthly_sales_df = pd.read_sql_query(sql_query, conn)
+    
+    # add the month column in YYYY-MM format
+    monthly_sales_df['Month'] = (pd.DatetimeIndex(monthly_sales_df['InvoiceDate']).strftime('%Y') + 
+        "-" + 
+        pd.DatetimeIndex(monthly_sales_df['InvoiceDate']).strftime('%m'))
+    
+    # drop the raw date column
+    monthly_sales_df.drop('InvoiceDate', axis=1)
+
+    #group by month and sum the Price and Quantity
+    monthly_sales_df = monthly_sales_df.groupby('Month', as_index=False).agg({"UnitPrice":sum, "Quantity":sum, "Month":'first'})
+
+    # rename the UnitPrice column to TotalSales
+    monthly_sales_df = monthly_sales_df.rename(columns={"UnitPrice":"TotalSales"})
+
+    return monthly_sales_df
 
 def get_top_artists_by_sales(num_results:int, conn:sqlite3.Connection) -> pd.DataFrame:
     """
@@ -93,7 +123,12 @@ def main():
     with conn:
 
         logging.info("Extracting sales data from database")
-        monthly_sales_df = get_sales_by_month(conn)
+
+        # there are two example approaches for this function
+        # Approach 1: format the month and calculate the total sales in SQL
+        # monthly_sales_df = get_sales_by_month_sql(conn)
+        # Approach 2: format the month and calculate the total sales in Pandas
+        monthly_sales_df = get_sales_by_month_pd(conn)
 
         logging.info("Saving the sales data as CSV")
         monthly_sales_df.to_csv(Path('data/sales.csv'), index=False)
