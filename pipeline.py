@@ -2,23 +2,30 @@
 Simple Data Pipeline
 """
 import sys
+import time
 from pathlib import Path
 import logging
 import sqlite3
 import pandas as pd
 
 
-def create_connection(db_file:str) -> sqlite3.Connection:
+def create_connection() -> sqlite3.Connection:
     """
     Utility function - creates connection to SQLite database
     :param db_file: database file path
     :return: Connection object or None
     """
     conn = None
-    try:
-        conn = sqlite3.connect(db_file)
-    except sqlite3.Error as error:
-        logging.error(error)
+    database_file_path = Path("data/chinook.db")
+    if not database_file_path.exists():
+        logging.error('database file not found')
+        sys.exit()
+    else:
+        try:
+            conn = sqlite3.connect(database_file_path)
+        except sqlite3.Error as error:
+            logging.error(error)
+            sys.exit()
 
     return conn
 
@@ -69,10 +76,10 @@ def get_sales_by_month_pd(conn:sqlite3.Connection) -> pd.DataFrame:
         INNER JOIN invoices i ON i.InvoiceId = ii.InvoiceId;
     """
     monthly_sales_df = pd.read_sql_query(sql_query, conn)
-    
+
     # add the month column in YYYY-MM format
     monthly_sales_df['Month'] = pd.to_datetime(monthly_sales_df['InvoiceDate']).dt.to_period('M')
-    
+
     # drop the raw date column
     monthly_sales_df.drop('InvoiceDate', axis=1)
 
@@ -113,11 +120,11 @@ def main():
     """
     Data Pipeline Process Control
     """
+    start_time = time.time()
     configure_logging()
     logging.info("Starting data pipeline process")
 
-    # create a database connection
-    conn = create_connection(Path("data/chinook.db"))
+    conn = create_connection()
 
     # run the data pipeline steps
     with conn:
@@ -141,6 +148,7 @@ def main():
 
     conn.close()
 
+    logging.info("Pipeline completed in %1.2f seconds" % (time.time() - start_time))
     logging.info("Finishing data pipeline process")
 
 
