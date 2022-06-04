@@ -77,10 +77,10 @@ def get_sales_by_month_pd(conn:sqlite3.Connection) -> pd.DataFrame:
     monthly_sales_df.drop('InvoiceDate', axis=1)
 
     #group by month and sum the Price and Quantity
-    monthly_sales_df = monthly_sales_df.groupby('Month', as_index=False).agg({"UnitPrice":sum, "Quantity":sum, "Month":'first'})
-
-    # rename the UnitPrice column to TotalSales
-    monthly_sales_df = monthly_sales_df.rename(columns={"UnitPrice":"TotalSales"})
+    monthly_sales_df = monthly_sales_df.groupby('Month').agg(
+        TotalSales=('UnitPrice', sum),
+        Quantity=('Quantity', sum),
+        Month=('Month','first'))
 
     return monthly_sales_df
 
