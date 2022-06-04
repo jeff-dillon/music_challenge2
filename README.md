@@ -21,7 +21,8 @@ Coding Challenge for Code Louisville Data Analysis 2 Course. The goal of this ch
 | ----------- | ----------- | ----------- | ----------- |
 | `get_connection()` | Path to SQLite file | Connection object | Utility function - returns a connection to SQLite database |
 | `configure_logging()` | N/A | None | Utility function - configures logging for data pipeline |
-| `get_sales_by_month()` | N/A | DataFrame | Data extract (Month, Quantity, TotalSales) |
+| `get_sales_by_month_sql()` | N/A | DataFrame | Data extract (Month, Quantity, TotalSales) using SQL to format and aggregate data |
+| `get_sales_by_month_pd()` | N/A | DataFrame | Data extract (Month, Quantity, TotalSales) using Pandas to format and aggregate data |
 | `get_top_artists_by_sales()` | Number Results | DataFrame | Data extract (ArtistName, Quantity, TotalSales) |
 | `main()` | N/A | None | controls/runs the pipeline process |
 
@@ -60,6 +61,12 @@ Music database schema for reference:
     - [Calculating Quarters in Pandas](https://datascienceparichay.com/article/get-quarter-from-date-in-pandas/)
 - Save the data to CSV file called `quarterly_sales.csv` 
 
+### Challenge 4: Refactor `get_top_artists_by_sales()` to use Pandas for aggregation
+- Add a `get_top_artists_by_sales_pd()` function to the `pipeline.py` file
+- Modify the SQL statement to remove the `SUM()` functions
+- Use Pandas to calculate the TotalSales and Quantity
+- Use Pandas to rename the columns as needed
+- Resulting DataFrame should include (Month, Quantity, TotalSales)
 
 ### Bonus: Graphing 
 - Update the `graphs.py` file to include a graph of sales by quarter.
