@@ -54,6 +54,7 @@ def get_sales_by_month_sql(conn:sqlite3.Connection) -> pd.DataFrame:
     monthly_sales_df = pd.read_sql_query(sql_query, conn)
     return monthly_sales_df
 
+
 def get_sales_by_month_pd(conn:sqlite3.Connection) -> pd.DataFrame:
     """
     Get total sales by month using Pandas to aggregate the data
@@ -70,9 +71,7 @@ def get_sales_by_month_pd(conn:sqlite3.Connection) -> pd.DataFrame:
     monthly_sales_df = pd.read_sql_query(sql_query, conn)
     
     # add the month column in YYYY-MM format
-    monthly_sales_df['Month'] = (pd.DatetimeIndex(monthly_sales_df['InvoiceDate']).strftime('%Y') + 
-        "-" + 
-        pd.DatetimeIndex(monthly_sales_df['InvoiceDate']).strftime('%m'))
+    monthly_sales_df['Month'] = pd.to_datetime(monthly_sales_df['InvoiceDate']).dt.to_period('M')
     
     # drop the raw date column
     monthly_sales_df.drop('InvoiceDate', axis=1)
@@ -84,6 +83,7 @@ def get_sales_by_month_pd(conn:sqlite3.Connection) -> pd.DataFrame:
     monthly_sales_df = monthly_sales_df.rename(columns={"UnitPrice":"TotalSales"})
 
     return monthly_sales_df
+
 
 def get_top_artists_by_sales(num_results:int, conn:sqlite3.Connection) -> pd.DataFrame:
     """

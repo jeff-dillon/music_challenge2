@@ -89,3 +89,4 @@ Music database schema for reference:
 - [SQL CASE Statements](https://mode.com/sql-tutorial/sql-case/)
 - [Calculating Quarters from Dates in Pandas](https://datascienceparichay.com/article/get-quarter-from-date-in-pandas/)
 - [SQLite Tutorial Query Tool](https://www.sqlitetutorial.net/tryit/)
+- [Pandas DatetimeIndex](https://pandas.pydata.org/docs/reference/api/pandas.DatetimeIndex.html)
