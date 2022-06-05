@@ -50,7 +50,7 @@ def get_sales_by_month_sql(conn:sqlite3.Connection) -> pd.DataFrame:
     """
     sql_query = """
         SELECT ROUND(SUM(ii.Quantity), 2) as Quantity,
-        ROUND(SUM(ii.UnitPrice), 2) as TotalSales,
+        ROUND(SUM(ii.UnitPrice * ii.Quantity), 2) as TotalSales,
         CAST(strftime('%Y', i.InvoiceDate) as text) || "-" || 
             CAST(strftime('%m', i.InvoiceDate) as text) as Month
         FROM invoice_items ii
@@ -82,9 +82,11 @@ def get_sales_by_month_pd(conn:sqlite3.Connection) -> pd.DataFrame:
     # drop the raw date column
     monthly_sales_df.drop('InvoiceDate', axis=1)
 
+    monthly_sales_df['TotalPrice'] = monthly_sales_df['UnitPrice'] * monthly_sales_df['Quantity']
+
     #group by month and sum the Price and Quantity
     monthly_sales_df = monthly_sales_df.groupby('Month').agg(
-        TotalSales=('UnitPrice', sum),
+        TotalSales=('TotalPrice', sum),
         Quantity=('Quantity', sum),
         Month=('Month','first'))
 
