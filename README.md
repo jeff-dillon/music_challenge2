@@ -45,7 +45,7 @@ Music database schema for reference:
 - add a new function to `pipeline.py` called `get_annual_sales_by_month()` that takes a Year and returns a dataframe with the sales for the specified year
 - The function should take a Year as a parameter
 - The function should return a DataFrame
-- The resulting Dataframe should include Month, Quantity, UnitPrice
+- The resulting Dataframe should include Month, Quantity, TotalSales
 - Save the data to a CSV file called 'sales_by_month_{year}.csv
 
 
