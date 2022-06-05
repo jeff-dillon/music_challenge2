@@ -12,7 +12,6 @@ import pandas as pd
 def create_connection() -> sqlite3.Connection:
     """
     Utility function - creates connection to SQLite database
-    :param db_file: database file path
     :return: Connection object or None
     """
     conn = None
