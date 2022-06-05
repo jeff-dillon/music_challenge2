@@ -6,16 +6,17 @@ import time
 from pathlib import Path
 import logging
 import sqlite3
+import yaml
 import pandas as pd
 
 
-def create_connection() -> sqlite3.Connection:
+def create_connection(cfg:dict) -> sqlite3.Connection:
     """
     Utility function - creates connection to SQLite database
     :return: Connection object or None
     """
     conn = None
-    database_file_path = Path("data/chinook.db")
+    database_file_path = Path(cfg['db']['file_path'])
     if not database_file_path.exists():
         logging.error('database file not found')
         sys.exit()
@@ -29,17 +30,27 @@ def create_connection() -> sqlite3.Connection:
     return conn
 
 
-def configure_logging():
+def configure_logging(cfg:dict):
     """
     Utility function - configures the data pipeline logging
     """
     # configure the logging
-    log_file_path = Path('pipeline_log.txt')
+    log_file_path = Path(cfg['logging']['file_path'])
     logging.basicConfig(filename=log_file_path,
                         format='%(asctime)s -- [%(levelname)s]: %(message)s',
                         datefmt='%m/%d/%Y %I:%M:%S %p',
                         level=logging.INFO)
     logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
+
+def get_config() -> dict:
+    """
+    Utility function returns Dict with config parameters
+    :return: Dict with config parameters
+    """
+    with open("config.yaml", "r", encoding='utf-8') as ymlfile:
+        cfg = yaml.safe_load(ymlfile)
+    return cfg
+
 
 
 def get_sales_by_month_sql(conn:sqlite3.Connection) -> pd.DataFrame:
@@ -102,7 +113,7 @@ def get_top_artists_by_sales(num_results:int, conn:sqlite3.Connection) -> pd.Dat
     """
     sql_query = """
         SELECT ROUND(SUM(ii.Quantity), 2) as Quantity,
-        ROUND(SUM(ii.UnitPrice), 2) as TotalSales,
+        ROUND(SUM(ii.UnitPrice * ii.Quantity), 2) as TotalSales,
         ar.Name as ArtistName
         FROM invoice_items ii
         INNER JOIN invoices i ON i.InvoiceId = ii.InvoiceId
@@ -122,10 +133,10 @@ def main():
     Data Pipeline Process Control
     """
     start_time = time.time()
-    configure_logging()
+    cfg = get_config()
+    configure_logging(cfg)
     logging.info("Starting data pipeline process")
-
-    conn = create_connection()
+    conn = create_connection(cfg)
 
     # run the data pipeline steps
     with conn:
@@ -139,17 +150,17 @@ def main():
         monthly_sales_df = get_sales_by_month_pd(conn)
 
         logging.info("Saving the sales data as CSV")
-        monthly_sales_df.to_csv(Path('data/sales.csv'), index=False)
+        monthly_sales_df.to_csv(Path(cfg['extract_files']['sales_by_month_file_path']), index=False)
 
         logging.info("Extracting top 10 Artists by TotalSales")
         sales_by_artist_df = get_top_artists_by_sales(10, conn)
 
         logging.info("Saving sales by artist data as CSV")
-        sales_by_artist_df.to_csv(Path('data/sales_by_artist.csv'), index=False)
+        sales_by_artist_df.to_csv(Path(cfg['extract_files']['sales_by_artist_file_path']), index=False)
 
     conn.close()
 
-    logging.info("Pipeline completed in %1.2f seconds" % (time.time() - start_time))
+    logging.info("Pipeline completed in %2.2f seconds" % (time.time() - start_time))
     logging.info("Finishing data pipeline process")
 
 

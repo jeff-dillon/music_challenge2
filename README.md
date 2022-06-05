@@ -19,8 +19,9 @@ Coding Challenge for Code Louisville Data Analysis 2 Course. The goal of this ch
 
 | Function | Parameters | Returns | Description |
 | ----------- | ----------- | ----------- | ----------- |
-| `get_connection()` | Path to SQLite file | Connection object | Utility function - returns a connection to SQLite database |
-| `configure_logging()` | N/A | None | Utility function - configures logging for data pipeline |
+| `get_connection()` | dict of config parameters | Connection object | Utility function - returns a connection to SQLite database |
+| `configure_logging()` | dict of config parameters | None | Utility function - configures logging for data pipeline |
+| `get_config()` | N/A | dict | Utility function - gets configuration parameters for pipeline process |
 | `get_sales_by_month_sql()` | N/A | DataFrame | Data extract (Month, Quantity, TotalSales) using SQL to format and aggregate data |
 | `get_sales_by_month_pd()` | N/A | DataFrame | Data extract (Month, Quantity, TotalSales) using Pandas to format and aggregate data |
 | `get_top_artists_by_sales()` | Number Results | DataFrame | Data extract (ArtistName, Quantity, TotalSales) |

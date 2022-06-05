@@ -1,9 +1,12 @@
+"""
+Example graphs to test pipeline CSV output
+"""
 from pathlib import Path
 import pandas as pd
 import plotly.express as px
 
 def load_sales_data() -> pd.DataFrame:
-    file_path = Path('data/sales.csv')
+    file_path = Path('data/sales_by_month.csv')
     df = pd.read_csv(file_path)
     return df
 

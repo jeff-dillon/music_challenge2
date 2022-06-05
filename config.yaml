@@ -1,0 +1,7 @@
+db:
+  file_path : data/chinook.db
+logging:
+  file_path : pipeline_log.txt
+extract_files :
+  sales_by_month_file_path : data/sales_by_month.csv
+  sales_by_artist_file_path : data/sales_by_artist.csv
