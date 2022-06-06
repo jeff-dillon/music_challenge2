@@ -42,6 +42,7 @@ def configure_logging(cfg:dict):
                         level=logging.INFO)
     logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
+
 def get_config() -> dict:
     """
     Utility function returns Dict with config parameters
@@ -50,7 +51,6 @@ def get_config() -> dict:
     with open("config.yaml", "r", encoding='utf-8') as ymlfile:
         cfg = yaml.safe_load(ymlfile)
     return cfg
-
 
 
 def get_sales_by_month_sql(conn:sqlite3.Connection) -> pd.DataFrame:
@@ -124,8 +124,19 @@ def get_top_artists_by_sales(num_results:int, conn:sqlite3.Connection) -> pd.Dat
         ORDER BY TotalSales DESC
         LIMIT ?
     """
-    artist_sales_df = pd.read_sql_query(sql_query, conn, params=(num_results, ))
+    artist_sales_df = pd.read_sql_query(sql_query, conn)
     return artist_sales_df
+
+
+def get_tracks_by_genre(conn:sqlite3.Connection) -> pd.DataFrame:
+    sql_query = """
+        SELECT g.Name as Genre, COUNT(t.GenreId) as NumTracks
+        FROM genres g
+        INNER JOIN tracks t ON t.GenreId = g.GenreId
+        GROUP BY t.GenreId
+        ORDER BY NumTracks DESC;
+    """
+    return pd.read_sql_query(sql_query, conn)
 
 
 def main():
@@ -147,16 +158,24 @@ def main():
         # Approach 1: format the month and calculate the total sales in SQL
         # monthly_sales_df = get_sales_by_month_sql(conn)
         # Approach 2: format the month and calculate the total sales in Pandas
-        monthly_sales_df = get_sales_by_month_pd(conn)
+        # monthly_sales_df = get_sales_by_month_pd(conn)
 
-        logging.info("Saving the sales data as CSV")
-        monthly_sales_df.to_csv(Path(cfg['extract_files']['sales_by_month_file_path']), index=False)
+        # logging.info("Saving the sales data as CSV")
+        # monthly_sales_df.to_csv(Path(cfg['extract_files']['sales_by_month_file_path']), index=False)
 
-        logging.info("Extracting top 10 Artists by TotalSales")
-        sales_by_artist_df = get_top_artists_by_sales(10, conn)
+        # logging.info("Extracting top 10 Artists by TotalSales")
+        # sales_by_artist_df = get_top_artists_by_sales(10, conn)
 
-        logging.info("Saving sales by artist data as CSV")
-        sales_by_artist_df.to_csv(Path(cfg['extract_files']['sales_by_artist_file_path']), index=False)
+        # logging.info("Saving sales by artist data as CSV")
+        # sales_by_artist_df.to_csv(Path(cfg['extract_files']['sales_by_artist_file_path']), index=False)
+
+        logging.info("Extracting tracks by genre")
+        tracks_by_genre = get_tracks_by_genre(conn)
+
+        logging.info("Saving tracks by genre data as CSV")
+        tracks_by_genre.to_csv(Path(cfg['extract_files']['tracks_by_genre_file_path']), index=False)
+
+
 
     conn.close()
 
