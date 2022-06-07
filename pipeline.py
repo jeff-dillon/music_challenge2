@@ -139,6 +139,19 @@ def get_tracks_by_genre(conn:sqlite3.Connection) -> pd.DataFrame:
     return pd.read_sql_query(sql_query, conn)
 
 
+def get_annual_sales_by_month(year:int, conn:sqlite3.Connection) -> pd.DataFrame:
+    sql_query = """
+        SELECT CAST(strftime('%m', i.InvoiceDate) as text) as Month,
+            SUM(ii.Quantity) as Quantity,
+            ROUND(SUM(ii.UnitPrice * ii.Quantity), 2) as TotalSales
+        FROM invoice_items ii
+        INNER JOIN invoices i ON i.InvoiceId = ii.InvoiceId
+		WHERE CAST(strftime('%Y', i.InvoiceDate) as text) = '{}'
+		GROUP BY Month;
+    """.format(year)
+    return pd.read_sql_query(sql_query, conn)
+
+
 def main():
     """
     Data Pipeline Process Control
@@ -169,11 +182,19 @@ def main():
         # logging.info("Saving sales by artist data as CSV")
         # sales_by_artist_df.to_csv(Path(cfg['extract_files']['sales_by_artist_file_path']), index=False)
 
-        logging.info("Extracting tracks by genre")
-        tracks_by_genre = get_tracks_by_genre(conn)
+        # logging.info("Extracting tracks by genre")
+        # tracks_by_genre = get_tracks_by_genre(conn)
 
-        logging.info("Saving tracks by genre data as CSV")
-        tracks_by_genre.to_csv(Path(cfg['extract_files']['tracks_by_genre_file_path']), index=False)
+        # logging.info("Saving tracks by genre data as CSV")
+        # tracks_by_genre.to_csv(Path(cfg['extract_files']['tracks_by_genre_file_path']), index=False)
+
+        year = 2012
+
+        logging.info(f"Extracting sales by month for {year}")
+        tracks_by_genre = get_annual_sales_by_month(year, conn)
+
+        logging.info(f"Saving {year} sales data as CSV")
+        tracks_by_genre.to_csv(Path(f'data/sales_by_month_{year}.csv'), index=False)
 
 
 
