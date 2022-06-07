@@ -152,6 +152,18 @@ def get_annual_sales_by_month(year:int, conn:sqlite3.Connection) -> pd.DataFrame
     return pd.read_sql_query(sql_query, conn)
 
 
+def get_sales_by_quarter(conn:sqlite3.Connection) -> pd.DataFrame:
+    sql_query = """
+        SELECT strftime('%Y', i.InvoiceDate) || 'Q' || FLOOR((strftime('%m', i.InvoiceDate) + 2) / 3 ) as Quarter,
+            SUM(ii.Quantity) as Quantity,
+            ROUND(SUM(ii.UnitPrice * ii.Quantity), 2) as TotalSales
+        FROM invoice_items ii
+        INNER JOIN invoices i ON i.InvoiceId = ii.InvoiceId
+		GROUP BY Quarter;
+    """
+    return pd.read_sql_query(sql_query, conn)
+
+
 def main():
     """
     Data Pipeline Process Control
@@ -188,13 +200,19 @@ def main():
         # logging.info("Saving tracks by genre data as CSV")
         # tracks_by_genre.to_csv(Path(cfg['extract_files']['tracks_by_genre_file_path']), index=False)
 
-        year = 2012
+        # year = 2012
 
-        logging.info(f"Extracting sales by month for {year}")
-        tracks_by_genre = get_annual_sales_by_month(year, conn)
+        # logging.info(f"Extracting sales by month for {year}")
+        # tracks_by_genre = get_annual_sales_by_month(year, conn)
 
-        logging.info(f"Saving {year} sales data as CSV")
-        tracks_by_genre.to_csv(Path(f'data/sales_by_month_{year}.csv'), index=False)
+        # logging.info(f"Saving {year} sales data as CSV")
+        # tracks_by_genre.to_csv(Path(f'data/sales_by_month_{year}.csv'), index=False)
+
+        logging.info("Extracting sales by quarter")
+        sales_by_quarter = get_sales_by_quarter(conn)
+
+        logging.info("Saving tracks by genre data as CSV")
+        sales_by_quarter.to_csv(Path(cfg['extract_files']['sales_by_quarter_file_path']), index=False)
 
 
 
