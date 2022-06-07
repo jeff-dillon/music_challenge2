@@ -128,6 +128,38 @@ def get_top_artists_by_sales(num_results:int, conn:sqlite3.Connection) -> pd.Dat
     return artist_sales_df
 
 
+def get_top_artists_by_sales(num_results:int, conn:sqlite3.Connection) -> pd.DataFrame:
+    """
+    Get the top N artists by total sales
+    :param: num_results: the number of results to return
+    :param: conn: connection to database
+    :return: DataFrame with sales by Artist (Artist, Quantity, TotalSales)
+    """
+    sql_query = """
+        SELECT Ii.Quantity as Quantity,
+            ii.UnitPrice as UnitPrice,
+            i.InvoiceDate as InvoiceDate,
+            ar.Name as ArtistName
+        FROM invoice_items ii
+        INNER JOIN invoices i ON i.InvoiceId = ii.InvoiceId
+        INNER JOIN tracks t ON t.TrackId = ii.TrackId
+        INNER JOIN albums al ON al.AlbumId = t.AlbumId
+        INNER JOIN artists ar ON ar.ArtistId = al.ArtistId
+    """
+
+    artist_sales_df = pd.read_sql_query(sql_query, conn)
+
+    artist_sales_df['Month'] = pd.to_datetime(artist_sales_df['InvoiceDate']).dt.to_period('M')
+    artist_sales_df.drop('InvoiceDate', axis=1)
+
+    artist_sales_df['TotalSales'] = artist_sales_df['UnitPrice'] * artist_sales_df['Quantity']
+
+    return artist_sales_df.groupby('ArtistName').agg(
+        TotalSales=('TotalSales', sum),
+        Quantity=('Quantity', sum),
+        Month=('Month','first')).sort_values(by=['TotalSales'], ascending=False).head(num_results)
+
+
 def get_tracks_by_genre(conn:sqlite3.Connection) -> pd.DataFrame:
     sql_query = """
         SELECT g.Name as Genre, COUNT(t.GenreId) as NumTracks
@@ -188,33 +220,43 @@ def main():
         # logging.info("Saving the sales data as CSV")
         # monthly_sales_df.to_csv(Path(cfg['extract_files']['sales_by_month_file_path']), index=False)
 
-        # logging.info("Extracting top 10 Artists by TotalSales")
-        # sales_by_artist_df = get_top_artists_by_sales(10, conn)
+        logging.info("Extracting top 10 Artists by TotalSales")
+        sales_by_artist_df = get_top_artists_by_sales(10, conn)
 
-        # logging.info("Saving sales by artist data as CSV")
-        # sales_by_artist_df.to_csv(Path(cfg['extract_files']['sales_by_artist_file_path']), index=False)
+        logging.info("Saving sales by artist data as CSV")
+        sales_by_artist_df.to_csv(Path(cfg['extract_files']['sales_by_artist_file_path']), index=False)
 
-        # logging.info("Extracting tracks by genre")
-        # tracks_by_genre = get_tracks_by_genre(conn)
+        # Challenge 1
+        logging.info("Extracting tracks by genre")
+        tracks_by_genre = get_tracks_by_genre(conn)
 
-        # logging.info("Saving tracks by genre data as CSV")
-        # tracks_by_genre.to_csv(Path(cfg['extract_files']['tracks_by_genre_file_path']), index=False)
+        logging.info("Saving tracks by genre data as CSV")
+        tracks_by_genre.to_csv(Path(cfg['extract_files']['tracks_by_genre_file_path']), index=False)
 
-        # year = 2012
+        # Challenge 2
+        year = 2012
 
-        # logging.info(f"Extracting sales by month for {year}")
-        # tracks_by_genre = get_annual_sales_by_month(year, conn)
+        logging.info(f"Extracting sales by month for {year}")
+        tracks_by_genre = get_annual_sales_by_month(year, conn)
 
-        # logging.info(f"Saving {year} sales data as CSV")
-        # tracks_by_genre.to_csv(Path(f'data/sales_by_month_{year}.csv'), index=False)
+        logging.info(f"Saving {year} sales data as CSV")
+        tracks_by_genre.to_csv(Path(f'data/sales_by_month_{year}.csv'), index=False)
 
+        # Challenge 3
         logging.info("Extracting sales by quarter")
         sales_by_quarter = get_sales_by_quarter(conn)
 
-        logging.info("Saving tracks by genre data as CSV")
+        logging.info("Saving sales by quarter data as CSV")
         sales_by_quarter.to_csv(Path(cfg['extract_files']['sales_by_quarter_file_path']), index=False)
 
+        # Challenge 4
+        num_results = 7
 
+        logging.info(f"Extracting top {num_results} artists by sales")
+        top_artists_by_sales = get_top_artists_by_sales(num_results, conn)
+
+        logging.info(f"Saving top {num_results} artists  by sales as CSV")
+        top_artists_by_sales.to_csv(Path(f'data/top_{num_results}_artists_by_sales.csv'), index=False)
 
     conn.close()
 
