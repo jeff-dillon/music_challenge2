@@ -195,6 +195,16 @@ def get_sales_by_quarter(conn:sqlite3.Connection) -> pd.DataFrame:
     """
     return pd.read_sql_query(sql_query, conn)
 
+def get_sales_by_year(conn:sqlite3.Connection) -> pd.DataFrame:
+    sql_query = """
+        SELECT strftime('%Y', i.InvoiceDate) as Year, 
+            SUM(ii.Quantity) as Quantity,
+            ROUND(SUM(ii.UnitPrice * ii.Quantity), 2) as TotalSales
+        FROM invoice_items ii
+        INNER JOIN invoices i ON i.InvoiceId = ii.InvoiceId
+		GROUP BY Year;
+    """
+    return pd.read_sql_query(sql_query, conn)
 
 def main():
     """
@@ -257,6 +267,13 @@ def main():
 
         logging.info(f"Saving top {num_results} artists  by sales as CSV")
         top_artists_by_sales.to_csv(Path(f'data/top_{num_results}_artists_by_sales.csv'), index=False)
+
+        # Bonus Challenge
+        logging.info("Extracting sales by year")
+        sales_by_year = get_sales_by_year(conn)
+
+        logging.info("Saving sales by year data as CSV")
+        sales_by_year.to_csv(Path(cfg['extract_files']['sales_by_year_file_path']), index=False)
 
     conn.close()
 

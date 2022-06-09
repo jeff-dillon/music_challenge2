@@ -7,3 +7,4 @@ extract_files :
   sales_by_artist_file_path : data/sales_by_artist.csv
   tracks_by_genre_file_path : data/tracks_by_genre.csv
   sales_by_quarter_file_path : data/sales_by_quarter.csv
+  sales_by_year_file_path : data/sales_by_year.csv
