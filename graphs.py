@@ -45,18 +45,31 @@ def plot_sales_by_year(df:pd.DataFrame) -> None:
     fig.show()
     return
 
+def load_tracks_by_genre_data() -> pd.DataFrame:
+    file_path = Path('data/tracks_by_genre.csv')
+    df = pd.read_csv(file_path)
+    return df
+
+def plot_tracks_by_genre(df:pd.DataFrame) -> None:
+    fig = px.pie(df, names='Genre', values="NumTracks", title='Tracks by Genre')
+    fig.show()
+    return
+
 def main():
-    # sales_df = load_sales_data()
-    # plot_sales(sales_df)
+    sales_df = load_sales_data()
+    plot_sales(sales_df)
 
-    # sales_by_artist_df = load_sales_by_artist_data()
-    # plot_sales_by_artist(sales_by_artist_df)
+    sales_by_artist_df = load_sales_by_artist_data()
+    plot_sales_by_artist(sales_by_artist_df)
 
-    # sales_by_quarter_df = load_sales_by_quarter_data()
-    # plot_sales_by_quarter(sales_by_quarter_df)
+    sales_by_quarter_df = load_sales_by_quarter_data()
+    plot_sales_by_quarter(sales_by_quarter_df)
 
     sales_by_year_df = load_sales_by_year_data()
     plot_sales_by_year(sales_by_year_df)
+
+    tracks_by_genre_df = load_tracks_by_genre_data()
+    plot_tracks_by_genre(tracks_by_genre_df)
 
 if __name__ == "__main__":
     main()
