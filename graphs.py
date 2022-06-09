@@ -35,6 +35,16 @@ def plot_sales_by_quarter(df:pd.DataFrame) -> None:
     fig.show()
     return
 
+def load_sales_by_year_data() -> pd.DataFrame:
+    file_path = Path('data/sales_by_year.csv')
+    df = pd.read_csv(file_path)
+    return df
+
+def plot_sales_by_year(df:pd.DataFrame) -> None:
+    fig = px.line(df, x='Year', y="TotalSales", title='Sales by Year')
+    fig.show()
+    return
+
 def main():
     # sales_df = load_sales_data()
     # plot_sales(sales_df)
@@ -42,8 +52,11 @@ def main():
     # sales_by_artist_df = load_sales_by_artist_data()
     # plot_sales_by_artist(sales_by_artist_df)
 
-    sales_by_quarter_df = load_sales_by_quarter_data()
-    plot_sales_by_quarter(sales_by_quarter_df)
+    # sales_by_quarter_df = load_sales_by_quarter_data()
+    # plot_sales_by_quarter(sales_by_quarter_df)
+
+    sales_by_year_df = load_sales_by_year_data()
+    plot_sales_by_year(sales_by_year_df)
 
 if __name__ == "__main__":
     main()
