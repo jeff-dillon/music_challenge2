@@ -178,10 +178,10 @@ def get_annual_sales_by_month(year:int, conn:sqlite3.Connection) -> pd.DataFrame
             ROUND(SUM(ii.UnitPrice * ii.Quantity), 2) as TotalSales
         FROM invoice_items ii
         INNER JOIN invoices i ON i.InvoiceId = ii.InvoiceId
-		WHERE CAST(strftime('%Y', i.InvoiceDate) as text) = '{}'
+		WHERE CAST(strftime('%Y', i.InvoiceDate) as text) = ?
 		GROUP BY Month;
-    """.format(year)
-    return pd.read_sql_query(sql_query, conn)
+    """
+    return pd.read_sql_query(sql_query, conn, params=[year])
 
 
 def get_sales_by_quarter(conn:sqlite3.Connection) -> pd.DataFrame:
