@@ -5,3 +5,7 @@ logging:
 extract_files :
   sales_by_month_file_path : data/sales_by_month.csv
   sales_by_artist_file_path : data/sales_by_artist.csv
+  tracks_by_genre_file_path: data/tracks_by_genre.csv
+  annual_sales_by_month_file_path: data/sales_by_month
+  sales_by_quarter_file_path: data/quarterly_sales.csv
+  top_artist_sales_file_path: data/sales_by_artist_pandas.csv
